@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM library/centos:7
+FROM azul/zulu-openjdk-centos:11
 MAINTAINER Presto community <https://prestodb.io/community.html>
 
 COPY ./files /
@@ -24,13 +24,10 @@ RUN \
         wget \
         && \
     \
-    # install Zulu JDK (will not be the default `java`)
-    rpm -i https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-jdk11.0.7-linux.x86_64.rpm && \
-    \
     # install supervisor
     yum --enablerepo=extras install -y setuptools epel-release && \
     yum install -y python-pip && \
-    pip install supervisor && \
+    pip install --trusted-host pypi.python.org --trusted-host pypi.org --trusted-host files.pythonhosted.org supervisor && \
     \
     # install commonly needed packages
     yum install -y \
@@ -41,7 +38,9 @@ RUN \
         vim `# helpful when troubleshooting product tests` \
         && \
     # cleanup
-    yum -y clean all && rm -rf /tmp/* /var/tmp/*
+    yum -y clean all && rm -rf /tmp/* /var/tmp/* && \
+    # fix permissions
+    mkdir -p /root/.ssh && chmod 0700 /root/.ssh && chmod 0700 /root
 
 ENV PATH="/usr/local/bin:${PATH}"
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
