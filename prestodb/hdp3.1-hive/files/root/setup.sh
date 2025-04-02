@@ -1,10 +1,15 @@
 #!/bin/bash -ex
 
 # make file system hostname resolvable
-echo "127.0.0.1 hadoop-master" >> /etc/hosts
+# This is not working from docker 1.7+, use docker build --add-host=hadoop-master:127.0.0.1 .
+# echo "127.0.0.1 hadoop-master" >> /etc/hosts
 
 # format namenode
 chown hdfs:hdfs /var/lib/hadoop-hdfs/cache/
+
+mkdir /usr/hdp/current/hadoop-client/logs /var/log/hadoop-hdfs /var/log/hadoop-yarn
+chgrp -R hadoop /usr/hdp/current/hadoop-client/logs /var/log/hadoop-hdfs /var/log/hadoop-yarn
+chmod -R 770 /usr/hdp/current/hadoop-client/logs /var/log/hadoop-hdfs /var/log/hadoop-yarn
 
 # workaround for 'could not open session' bug as suggested here:
 # https://github.com/docker/docker/issues/7056#issuecomment-49371610
@@ -35,20 +40,33 @@ su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown hive /user/hive/warehouse'
 killall java
 
 # setup metastore
+ln -s /usr/bin/resolveip /usr/libexec # mariadb-server installs resolveip in /usr/bin but mysql_install_db expects it in /usr/libexec
 mysql_install_db
+
+chown -R mysql:mysql /var/lib/mysql
 
 /usr/bin/mysqld_safe &
 sleep 10s
 
-cd /usr/hdp/current/hive-metastore/scripts/metastore/upgrade/mysql/
 echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;" | mysql
-echo "CREATE DATABASE metastore; USE metastore; SOURCE hive-schema-1.2.1000.mysql.sql;" | mysql
+echo "CREATE DATABASE metastore;" | mysql
 /usr/bin/mysqladmin -u root password 'root'
+/usr/hdp/current/hive-client/bin/schematool -dbType mysql -initSchema
 
 killall mysqld
 sleep 10s
 mkdir /var/log/mysql/
-chown mysql:mysql /var/log/mysql/
+chown -R mysql:mysql /var/log/mysql/
 
-# Additional libs
-cp -av /usr/hdp/current/hadoop-client/lib/native/Linux-amd64-64/* /usr/lib64/
+chmod 0700 /root && chmod 0700 /root/.ssh
+
+# Create `information_schema` and `sys` schemas in Hive
+supervisord -c /etc/supervisord.conf &
+while ! beeline -n hive -e "SELECT 1"; do
+    echo "Waiting for HiveServer2 ..."
+    sleep 10s
+done
+/usr/hdp/current/hive-client/bin/schematool -userName hive -metaDbType mysql -dbType hive -initSchema \
+    -url jdbc:hive2://localhost:10000/default -driver org.apache.hive.jdbc.HiveDriver
+supervisorctl stop all
+
