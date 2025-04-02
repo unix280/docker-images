@@ -54,6 +54,7 @@ IMAGE_DIRS := $(shell find $(ORGDIR) -type f -name Dockerfile -exec dirname {} \
 UNLABELLED_TAGS := $(addsuffix @unlabelled,$(IMAGE_DIRS))
 PARENT_CHECKS := $(addsuffix -parent-check,$(IMAGE_DIRS))
 LATEST_TAGS := $(addsuffix @latest,$(IMAGE_DIRS))
+BUILD_TAGS := $(addsuffix @build,$(IMAGE_DIRS))
 VERSION_TAGS := $(addsuffix @$(VERSION),$(IMAGE_DIRS))
 GIT_HASH := $(shell git rev-parse --short HEAD)
 GIT_HASH_TAGS := $(addsuffix @$(GIT_HASH),$(IMAGE_DIRS))
@@ -218,8 +219,16 @@ $(IMAGE_DIRS): %: %@latest
 # this repository.
 #
 $(EXTERNAL_DEPS): %:
-	docker pull $(call docker-tag,$@)
+	if ! docker image inspect $(call docker-tag,$@) >/dev/null 2>&1; then \
+		docker pull $(call docker-tag,$@); \
+	fi
 
+$(BUILD_TAGS): %@build: %/Dockerfile %-parent-check
+	@echo
+	@echo "Building [$@] image"
+	@echo
+	cd $* && time $(SHELL) -c "( tar -czh . | docker build ${BUILD_ARGS} $(DBFLAGS_$*) -t $(call docker-tag,$@) --label $(LABEL) - )"
+	docker tag $(call docker-tag,$@) $(shell $(SHELL) $(LABEL_PARENT_SH) $*:latest)
 #
 # Targets and variables for creating the dependency graph of the docker images
 # as an image file.
