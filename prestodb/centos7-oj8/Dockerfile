@@ -11,9 +11,9 @@
 # limitations under the License.
 
 FROM azul/zulu-openjdk-centos:11
-MAINTAINER Presto community <https://prestodb.io/community.html>
+LABEL maintainer="Presto community <https://prestodb.io/community.html>"
 
-COPY ./files /
+COPY ./files /tmp/files
 
 # Install Java and presto-admin dependences
 RUN \
@@ -37,11 +37,17 @@ RUN \
         telnet `# helpful when troubleshooting product tests` \
         vim `# helpful when troubleshooting product tests` \
         && \
-    # cleanup
-    yum -y clean all && rm -rf /tmp/* /var/tmp/* && \
+    \
+    # copy configuration files
+    cp -a /tmp/files/opt/* /opt/ && \
+    cp -a /tmp/files/usr/* /usr/ && \
+    \
     # fix permissions
-    mkdir -p /root/.ssh && chmod 0700 /root/.ssh && chmod 0700 /root
+    mkdir -p /root/.ssh && chown -R root:root /root && chmod 0700 /root/.ssh /root && \
+    \
+    # cleanup
+    yum -q clean all && rm -rf /var/cache/yum && rm -rf /tmp/* /var/tmp/*
 
-ENV PATH="/usr/local/bin:${PATH}"
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
-ENV LANG=en_US.UTF-8
+ENV PATH="/usr/local/bin:${PATH}" \
+    JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk \
+    LANG=en_US.UTF-8

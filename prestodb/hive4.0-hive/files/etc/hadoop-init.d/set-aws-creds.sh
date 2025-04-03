@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -ex
 
 if [[ -n "${AWS_ACCESS_KEY_ID}" ]]
 then

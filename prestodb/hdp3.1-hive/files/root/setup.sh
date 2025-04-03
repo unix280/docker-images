@@ -69,4 +69,3 @@ done
 /usr/hdp/current/hive-client/bin/schematool -userName hive -metaDbType mysql -dbType hive -initSchema \
     -url jdbc:hive2://localhost:10000/default -driver org.apache.hive.jdbc.HiveDriver
 supervisorctl stop all
-

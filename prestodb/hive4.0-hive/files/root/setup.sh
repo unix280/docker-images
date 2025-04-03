@@ -21,4 +21,3 @@ chown -R mysql:mysql /var/log/mysql/
 rm -rf /tmp/* /var/tmp/*
 
 adduser hive
-
