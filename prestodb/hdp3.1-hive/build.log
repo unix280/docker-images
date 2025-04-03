@@ -1,712 +1,0 @@
-#0 building with "default" instance using docker driver
-
-#1 [internal] load build definition from Dockerfile
-#1 transferring dockerfile: 3.08kB done
-#1 WARN: JSONArgsRecommended: JSON arguments recommended for CMD to prevent unintended behavior related to OS signals (line 90)
-#1 DONE 0.0s
-
-#2 [internal] load metadata for docker.io/prestodb/centos7-oj8:unlabelled
-#2 DONE 0.0s
-
-#3 [internal] load .dockerignore
-#3 transferring context: 2B done
-#3 DONE 0.0s
-
-#4 [ 1/12] FROM docker.io/prestodb/centos7-oj8:unlabelled
-#4 DONE 0.0s
-
-#5 [internal] load build context
-#5 transferring context: 1.61kB done
-#5 DONE 0.0s
-
-#6 [ 3/12] RUN set -xeu;     echo '[HDP]' > /etc/yum.repos.d/hdp.repo &&     echo 'name=HDP' >> /etc/yum.repos.d/hdp.repo &&     echo 'baseurl=https://hdpweb.o.onslip.net/p/HDP/3.x/3.1.0.0/centos7' >> /etc/yum.repos.d/hdp.repo &&     echo 'enabled=1' >> /etc/yum.repos.d/hdp.repo &&     echo 'gpgcheck=0' >> /etc/yum.repos.d/hdp.repo &&     echo OK
-#6 CACHED
-
-#7 [ 4/12] RUN yum install -y     hadoop-hdfs-namenode     hadoop-hdfs-secondarynamenode     hadoop-hdfs-datanode     hadoop-yarn-resourcemanager     hadoop-yarn-nodemanager     hive     hive-metastore     hive-server2     tez     hadooplzo     hadooplzo-native     lzo     lzo-devel     lzop     mariadb-server     mysql-connector-java   && yum -y clean all && rm -rf /tmp/* /var/tmp/*   && ln -s /usr/share/java/mysql-connector-java.jar /usr/hdp/current/hive-metastore/lib/mysql-connector-java.jar
-#7 CACHED
-
-#8 [ 9/12] RUN chmod 0700 /root && chmod 0700 /root/.ssh
-#8 CACHED
-
-#9 [ 2/12] RUN ln -snf "/usr/share/zoneinfo/Asia/Kathmandu" /etc/localtime && echo "Asia/Kathmandu" > /etc/timezone
-#9 CACHED
-
-#10 [ 6/12] RUN yum install -y openssh openssh-clients openssh-server && yum -y clean all
-#10 CACHED
-
-#11 [ 8/12] RUN passwd --unlock root
-#11 CACHED
-
-#12 [ 7/12] RUN ssh-keygen -t rsa -b 4096 -C "automation@prestodb.io" -N "" -f /root/.ssh/id_rsa &&     ssh-keygen -t rsa -b 4096 -N "" -f /etc/ssh/ssh_host_rsa_key &&     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
-#12 CACHED
-
-#13 [ 5/12] RUN rm -r /etc/hadoop/conf/*   && rm -r /etc/hive/conf/*
-#13 CACHED
-
-#14 [10/12] COPY ./files /
-#14 CACHED
-
-#15 [11/12] RUN /root/setup.sh   && rm -rf /tmp/* /var/tmp/*
-#15 0.295 + chown hdfs:hdfs /var/lib/hadoop-hdfs/cache/
-#15 0.297 + mkdir /usr/hdp/current/hadoop-client/logs /var/log/hadoop-hdfs /var/log/hadoop-yarn
-#15 0.300 + chgrp -R hadoop /usr/hdp/current/hadoop-client/logs /var/log/hadoop-hdfs /var/log/hadoop-yarn
-#15 0.302 + chmod -R 770 /usr/hdp/current/hadoop-client/logs /var/log/hadoop-hdfs /var/log/hadoop-yarn
-#15 0.303 + rm -f /etc/security/limits.d/hdfs.conf
-#15 0.305 + su -c 'echo '\''N'\'' | hdfs namenode -format' hdfs
-#15 0.401 WARNING: HADOOP_NAMENODE_OPTS has been replaced by HDFS_NAMENODE_OPTS. Using value of HADOOP_NAMENODE_OPTS.
-#15 1.166 2025-04-02 16:50:10,600 - INFO  [main:LogAdapter@51] - STARTUP_MSG: 
-#15 1.166 /************************************************************
-#15 1.166 STARTUP_MSG: Starting NameNode
-#15 1.166 STARTUP_MSG:   host = localhost/127.0.0.1
-#15 1.166 STARTUP_MSG:   args = [-format]
-#15 1.166 STARTUP_MSG:   version = 3.1.1.3.1.0.0-78
-#15 1.166 STARTUP_MSG:   classpath = /usr/hdp/3.1.0.0-78/hadoop/conf:/usr/hdp/3.1.0.0-78/hadoop/lib/jersey-server-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/ranger-hdfs-plugin-shim-1.2.0.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jersey-servlet-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/ranger-plugin-classloader-1.2.0.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/nimbus-jose-jwt-4.41.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/ranger-yarn-plugin-shim-1.2.0.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-admin-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/accessors-smart-1.2.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/slf4j-api-1.7.25.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/asm-5.0.4.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/slf4j-log4j12-1.7.25.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/avro-1.7.7.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-client-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-beanutils-1.9.3.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/snappy-java-1.0.5.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-cli-1.2.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-common-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-codec-1.11.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-http-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-collections-3.2.2.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-core-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-compress-1.4.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-io-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-configuration2-2.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/stax2-api-3.1.4.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-io-2.5.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-crypto-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-lang-2.6.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-identity-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-lang3-3.4.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-server-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-logging-1.1.3.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-simplekdc-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-math3-3.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/token-provider-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/commons-net-3.6.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerb-util-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/curator-client-2.12.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-security-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/curator-framework-2.12.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerby-asn1-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/curator-recipes-2.12.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/woodstox-core-5.0.3.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/gson-2.2.4.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/xz-1.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/guava-11.0.2.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-server-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/htrace-core4-4.1.0-incubating.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerby-config-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/httpclient-4.5.2.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/httpcore-4.4.4.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jsch-0.1.54.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-annotations-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerby-pkix-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-core-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerby-util-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/kerby-xdr-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-databind-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/log4j-1.2.17.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-jaxrs-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/json-smart-2.3.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/metrics-core-3.2.4.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jackson-xc-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/netty-3.10.5.Final.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/javax.servlet-api-3.1.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jaxb-api-2.2.11.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/paranamer-2.3.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jaxb-impl-2.2.3-1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/re2j-1.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jcip-annotations-1.0-1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/protobuf-java-2.5.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jersey-core-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/zookeeper-3.4.6.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jersey-json-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jettison-1.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-servlet-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jsp-api-2.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-util-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jsr305-3.0.0.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-webapp-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jsr311-api-1.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jetty-xml-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop/lib/jul-to-slf4j-1.7.25.jar:/usr/hdp/3.1.0.0-78/hadoop/.//azure-data-lake-store-sdk-2.2.7.jar:/usr/hdp/3.1.0.0-78/hadoop/.//azure-keyvault-core-1.0.0.jar:/usr/hdp/3.1.0.0-78/hadoop/.//azure-storage-7.0.0.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-annotations-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-annotations.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-auth-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-auth.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-azure-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-azure-datalake-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-azure-datalake.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-azure.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-common-3.1.1.3.1.0.0-78-tests.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-common-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-common-tests.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-common.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-kms-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-kms.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-nfs-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop/.//hadoop-nfs.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/./:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-common-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/accessors-smart-1.2.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/token-provider-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/asm-5.0.4.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/woodstox-core-5.0.3.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/avro-1.7.7.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-core-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-beanutils-1.9.3.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/xz-1.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-cli-1.2.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-crypto-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-codec-1.11.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-util-ajax-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-collections-3.2.2.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-identity-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-compress-1.4.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-security-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-configuration2-2.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-server-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-daemon-1.0.13.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-io-2.5.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-simplekdc-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-lang-2.6.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-util-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-lang3-3.4.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerby-asn1-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-logging-1.1.3.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerby-config-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-math3-3.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/commons-net-3.6.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerby-pkix-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/curator-client-2.12.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jsch-0.1.54.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/curator-framework-2.12.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerby-util-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/curator-recipes-2.12.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/gson-2.2.4.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/guava-11.0.2.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-xml-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/htrace-core4-4.1.0-incubating.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerby-xdr-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/httpclient-4.5.2.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/httpcore-4.4.4.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/json-simple-1.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-annotations-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/leveldbjni-all-1.8.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-core-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/log4j-1.2.17.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-core-asl-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/netty-3.10.5.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-databind-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/netty-all-4.0.52.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-jaxrs-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/json-smart-2.3.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-mapper-asl-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/nimbus-jose-jwt-4.41.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jackson-xc-1.9.13.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/okhttp-2.7.5.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/javax.servlet-api-3.1.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jaxb-api-2.2.11.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/okio-1.6.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jaxb-impl-2.2.3-1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/paranamer-2.3.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jcip-annotations-1.0-1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/protobuf-java-2.5.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jersey-core-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/re2j-1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jersey-json-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/snappy-java-1.0.5.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jersey-server-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/stax2-api-3.1.4.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jersey-servlet-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jettison-1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jsr305-3.0.0.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-http-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jsr311-api-1.1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-io-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-server-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-servlet-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-admin-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-util-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/kerb-client-1.0.1.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/jetty-webapp-9.3.24.v20180605.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/lib/zookeeper-3.4.6.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-3.1.1.3.1.0.0-78-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-client-3.1.1.3.1.0.0-78-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-client-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-client-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-client.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-httpfs-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-httpfs.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-native-client-3.1.1.3.1.0.0-78-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-native-client-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-native-client-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-native-client.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-nfs-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-nfs.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-rbf-3.1.1.3.1.0.0-78-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-rbf-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-rbf-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-rbf.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-hdfs/.//hadoop-hdfs.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/lib/*:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//kafka-clients-0.8.2.1.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//aliyun-sdk-oss-2.8.3.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-shuffle.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//aws-java-sdk-bundle-1.11.271.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-uploader.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//azure-data-lake-store-sdk-2.2.7.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-resourceestimator.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//azure-keyvault-core-1.0.0.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-buffer-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//azure-storage-7.0.0.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//flogger-0.3.1.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-examples.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//flogger-log4j-backend-0.3.1.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-openstack-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//flogger-system-backend-0.3.1.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//gcs-connector-1.9.10.3.1.0.0-78-shaded.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//lz4-1.2.0.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//google-extensions-0.3.1.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-openstack.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-aliyun-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//ojalgo-43.0.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-aliyun.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-archive-logs-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-codec-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-archive-logs.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-nativetask.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-archives-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-archives.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-rumen-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-aws-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-aws.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-rumen.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-azure-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-examples-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-azure-datalake-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-codec-http-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-azure-datalake.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-azure.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-shuffle-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-datajoin-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-datajoin.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-sls-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-distcp-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-distcp.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-sls.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-extras-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-extras.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-fs2img-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-fs2img.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-streaming-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-gridmix-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-gridmix.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-streaming.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-kafka-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-kafka.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-common.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-app-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//jdom-1.1.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-app.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-plugins.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-common-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-core-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-core.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-hs.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-3.1.1.3.1.0.0-78-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-hs-plugins-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-jobclient-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-nativetask-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-mapreduce-client-uploader-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//hadoop-resourceestimator-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-common-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-handler-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-resolver-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//netty-transport-4.1.17.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-mapreduce/.//wildfly-openssl-1.0.4.Final.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/./:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/HikariCP-java7-2.4.12.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/aopalliance-1.0.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/dnsjava-2.1.7.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/ehcache-3.3.1.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/fst-2.50.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/geronimo-jcache_1.0_spec-1.0-alpha-1.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/guice-4.0.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/guice-servlet-4.0.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/jackson-jaxrs-base-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/jackson-jaxrs-json-provider-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/jackson-module-jaxb-annotations-2.9.5.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/java-util-1.9.0.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/javax.inject-1.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/jersey-client-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/jersey-guice-1.19.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/json-io-2.5.1.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/metrics-core-3.2.4.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/mssql-jdbc-6.2.1.jre7.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/objenesis-1.0.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/snakeyaml-1.16.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/lib/swagger-annotations-1.5.4.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-api-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-api.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-web-proxy-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-applications-distributedshell-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-applications-distributedshell.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-web-proxy.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-applications-unmanaged-am-launcher-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-applications-unmanaged-am-launcher.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-client-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-client.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-common-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-common.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-registry-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-registry.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-services-api-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-applicationhistoryservice-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-applicationhistoryservice.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-common-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-common.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-nodemanager-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-nodemanager.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-services-core-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-resourcemanager-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-resourcemanager.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-router-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-router.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-sharedcachemanager-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-sharedcachemanager.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-tests-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-tests.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-services-api.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-timeline-pluginstorage-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-server-timeline-pluginstorage.jar:/usr/hdp/3.1.0.0-78/hadoop-yarn/.//hadoop-yarn-services-core.jar:/usr/hdp/3.1.0.0-78/tez/hadoop-shim-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/hadoop-shim-2.8-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-api-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-common-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-dag-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-examples-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-history-parser-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-javadoc-tools-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-job-analyzer-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-mapreduce-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-protobuf-history-plugin-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-runtime-internals-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-runtime-library-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-tests-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-cache-plugin-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-history-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-history-with-acls-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-history-with-fs-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/RoaringBitmap-0.4.9.jar:/usr/hdp/3.1.0.0-78/tez/lib/async-http-client-1.9.40.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-cli-1.2.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-codec-1.4.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-collections-3.2.2.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-collections4-4.1.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-io-2.4.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-lang-2.6.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-math3-3.1.1.jar:/usr/hdp/3.1.0.0-78/tez/lib/gcs-connector-1.9.10.3.1.0.0-78-shaded.jar:/usr/hdp/3.1.0.0-78/tez/lib/guava-11.0.2.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-aws-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-azure-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-azure-datalake-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-hdfs-client-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-mapreduce-client-common-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-mapreduce-client-core-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-yarn-server-timeline-pluginstorage-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/jersey-client-1.19.jar:/usr/hdp/3.1.0.0-78/tez/lib/jersey-json-1.19.jar:/usr/hdp/3.1.0.0-78/tez/lib/jettison-1.3.4.jar:/usr/hdp/3.1.0.0-78/tez/lib/jetty-server-9.3.22.v20171030.jar:/usr/hdp/3.1.0.0-78/tez/lib/jetty-util-9.3.22.v20171030.jar:/usr/hdp/3.1.0.0-78/tez/lib/jsr305-3.0.0.jar:/usr/hdp/3.1.0.0-78/tez/lib/metrics-core-3.1.0.jar:/usr/hdp/3.1.0.0-78/tez/lib/protobuf-java-2.5.0.jar:/usr/hdp/3.1.0.0-78/tez/lib/servlet-api-2.5.jar:/usr/hdp/3.1.0.0-78/tez/lib/slf4j-api-1.7.10.jar:/usr/hdp/3.1.0.0-78/tez/conf:/usr/hdp/3.1.0.0-78/tez/conf_llap:/usr/hdp/3.1.0.0-78/tez/doc:/usr/hdp/3.1.0.0-78/tez/hadoop-shim-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/hadoop-shim-2.8-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib:/usr/hdp/3.1.0.0-78/tez/man:/usr/hdp/3.1.0.0-78/tez/tez-api-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-common-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-dag-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-examples-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-history-parser-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-javadoc-tools-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-job-analyzer-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-mapreduce-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-protobuf-history-plugin-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-runtime-internals-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-runtime-library-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-tests-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-cache-plugin-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-history-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-history-with-acls-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/tez-yarn-timeline-history-with-fs-0.9.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/ui:/usr/hdp/3.1.0.0-78/tez/lib/async-http-client-1.9.40.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-cli-1.2.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-codec-1.4.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-collections-3.2.2.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-collections4-4.1.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-io-2.4.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-lang-2.6.jar:/usr/hdp/3.1.0.0-78/tez/lib/commons-math3-3.1.1.jar:/usr/hdp/3.1.0.0-78/tez/lib/gcs-connector-1.9.10.3.1.0.0-78-shaded.jar:/usr/hdp/3.1.0.0-78/tez/lib/guava-11.0.2.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-aws-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-azure-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-azure-datalake-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-hdfs-client-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-mapreduce-client-common-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-mapreduce-client-core-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/hadoop-yarn-server-timeline-pluginstorage-3.1.1.3.1.0.0-78.jar:/usr/hdp/3.1.0.0-78/tez/lib/jersey-client-1.19.jar:/usr/hdp/3.1.0.0-78/tez/lib/jersey-json-1.19.jar:/usr/hdp/3.1.0.0-78/tez/lib/jettison-1.3.4.jar:/usr/hdp/3.1.0.0-78/tez/lib/jetty-server-9.3.22.v20171030.jar:/usr/hdp/3.1.0.0-78/tez/lib/jetty-util-9.3.22.v20171030.jar:/usr/hdp/3.1.0.0-78/tez/lib/jsr305-3.0.0.jar:/usr/hdp/3.1.0.0-78/tez/lib/metrics-core-3.1.0.jar:/usr/hdp/3.1.0.0-78/tez/lib/protobuf-java-2.5.0.jar:/usr/hdp/3.1.0.0-78/tez/lib/RoaringBitmap-0.4.9.jar:/usr/hdp/3.1.0.0-78/tez/lib/servlet-api-2.5.jar:/usr/hdp/3.1.0.0-78/tez/lib/slf4j-api-1.7.10.jar:/usr/hdp/3.1.0.0-78/tez/lib/tez.tar.gz
-#15 1.168 STARTUP_MSG:   build = git@github.com:hortonworks/hadoop.git -r e4f82af51faec922b4804d0232a637422ec29e64; compiled by 'jenkins' on 2018-12-06T12:26Z
-#15 1.168 STARTUP_MSG:   java = 1.8.0_412
-#15 1.168 ************************************************************/
-#15 1.178 2025-04-02 16:50:10,615 - INFO  [main:LogAdapter@51] - registered UNIX signal handlers for [TERM, HUP, INT]
-#15 1.300 2025-04-02 16:50:10,737 - INFO  [main:NameNode@1583] - createNameNode [-format]
-#15 1.951 2025-04-02 16:50:11,387 - WARN  [main:Util@99] - Path /var/lib/hadoop-hdfs/cache/name/ should be specified as a URI in configuration files. Please update hdfs configuration.
-#15 1.952 2025-04-02 16:50:11,389 - WARN  [main:Util@99] - Path /var/lib/hadoop-hdfs/cache/name/ should be specified as a URI in configuration files. Please update hdfs configuration.
-#15 1.960 Formatting using clusterid: CID-d4ddb363-47d5-43de-91c7-91f383066d43
-#15 2.007 2025-04-02 16:50:11,444 - INFO  [main:FSEditLog@227] - Edit logging is async:true
-#15 2.029 2025-04-02 16:50:11,465 - INFO  [main:FSNamesystem@749] - KeyProvider: null
-#15 2.031 2025-04-02 16:50:11,468 - INFO  [main:FSNamesystemLock@122] - fsLock is fair: true
-#15 2.032 2025-04-02 16:50:11,469 - INFO  [main:FSNamesystemLock@138] - Detailed lock hold time metrics enabled: false
-#15 2.041 2025-04-02 16:50:11,478 - INFO  [main:FSNamesystem@774] - fsOwner             = hdfs (auth:SIMPLE)
-#15 2.041 2025-04-02 16:50:11,478 - INFO  [main:FSNamesystem@775] - supergroup          = supergroup
-#15 2.041 2025-04-02 16:50:11,478 - INFO  [main:FSNamesystem@776] - isPermissionEnabled = true
-#15 2.042 2025-04-02 16:50:11,478 - INFO  [main:FSNamesystem@787] - HA Enabled: false
-#15 2.114 2025-04-02 16:50:11,551 - INFO  [main:Util@395] - dfs.datanode.fileio.profiling.sampling.percentage set to 0. Disabling file IO profiling
-#15 2.142 2025-04-02 16:50:11,578 - INFO  [main:DatanodeManager@301] - dfs.block.invalidate.limit: configured=1000, counted=60, effected=1000
-#15 2.144 2025-04-02 16:50:11,579 - INFO  [main:DatanodeManager@309] - dfs.namenode.datanode.registration.ip-hostname-check=true
-#15 2.153 2025-04-02 16:50:11,589 - INFO  [main:InvalidateBlocks@79] - dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
-#15 2.153 2025-04-02 16:50:11,590 - INFO  [main:InvalidateBlocks@85] - The block deletion will start around 2025 Apr 02 16:50:11
-#15 2.157 2025-04-02 16:50:11,594 - INFO  [main:LightWeightGSet@395] - Computing capacity for map BlocksMap
-#15 2.157 2025-04-02 16:50:11,594 - INFO  [main:LightWeightGSet@396] - VM type       = 64-bit
-#15 2.159 2025-04-02 16:50:11,596 - INFO  [main:LightWeightGSet@397] - 2.0% max memory 481.5 MB = 9.6 MB
-#15 2.159 2025-04-02 16:50:11,596 - INFO  [main:LightWeightGSet@402] - capacity      = 2^20 = 1048576 entries
-#15 2.173 2025-04-02 16:50:11,610 - INFO  [main:BlockManager@579] - dfs.block.access.token.enable = false
-#15 2.187 2025-04-02 16:50:11,624 - INFO  [main:Configuration@1395] - No unit for dfs.namenode.safemode.extension(30000) assuming MILLISECONDS
-#15 2.187 2025-04-02 16:50:11,624 - INFO  [main:BlockManagerSafeMode@161] - dfs.namenode.safemode.threshold-pct = 0.0
-#15 2.188 2025-04-02 16:50:11,625 - INFO  [main:BlockManagerSafeMode@162] - dfs.namenode.safemode.min.datanodes = 0
-#15 2.188 2025-04-02 16:50:11,625 - INFO  [main:BlockManagerSafeMode@164] - dfs.namenode.safemode.extension = 30000
-#15 2.188 2025-04-02 16:50:11,625 - INFO  [main:BlockManager@565] - defaultReplication         = 3
-#15 2.188 2025-04-02 16:50:11,626 - INFO  [main:BlockManager@566] - maxReplication             = 512
-#15 2.189 2025-04-02 16:50:11,626 - INFO  [main:BlockManager@567] - minReplication             = 1
-#15 2.189 2025-04-02 16:50:11,626 - INFO  [main:BlockManager@568] - maxReplicationStreams      = 2
-#15 2.190 2025-04-02 16:50:11,627 - INFO  [main:BlockManager@569] - redundancyRecheckInterval  = 3000ms
-#15 2.190 2025-04-02 16:50:11,627 - INFO  [main:BlockManager@570] - encryptDataTransfer        = false
-#15 2.190 2025-04-02 16:50:11,627 - INFO  [main:BlockManager@571] - maxNumBlocksToLog          = 1000
-#15 2.252 2025-04-02 16:50:11,689 - INFO  [main:LightWeightGSet@395] - Computing capacity for map INodeMap
-#15 2.252 2025-04-02 16:50:11,689 - INFO  [main:LightWeightGSet@396] - VM type       = 64-bit
-#15 2.252 2025-04-02 16:50:11,689 - INFO  [main:LightWeightGSet@397] - 1.0% max memory 481.5 MB = 4.8 MB
-#15 2.253 2025-04-02 16:50:11,690 - INFO  [main:LightWeightGSet@402] - capacity      = 2^19 = 524288 entries
-#15 2.255 2025-04-02 16:50:11,692 - INFO  [main:FSDirectory@287] - ACLs enabled? false
-#15 2.255 2025-04-02 16:50:11,692 - INFO  [main:FSDirectory@291] - POSIX ACL inheritance enabled? true
-#15 2.255 2025-04-02 16:50:11,692 - INFO  [main:FSDirectory@295] - XAttrs enabled? true
-#15 2.256 2025-04-02 16:50:11,693 - INFO  [main:FSDirectory@359] - Caching file names occurring more than 10 times
-#15 2.264 2025-04-02 16:50:11,701 - INFO  [main:SnapshotManager@124] - Loaded config captureOpenFiles: false, skipCaptureAccessTimeOnlyChange: false, snapshotDiffAllowSnapRootDescendant: true, maxSnapshotLimit: 65536
-#15 2.268 2025-04-02 16:50:11,705 - INFO  [main:DirectoryDiffListFactory@43] - SkipList is disabled
-#15 2.274 2025-04-02 16:50:11,711 - INFO  [main:LightWeightGSet@395] - Computing capacity for map cachedBlocks
-#15 2.274 2025-04-02 16:50:11,711 - INFO  [main:LightWeightGSet@396] - VM type       = 64-bit
-#15 2.275 2025-04-02 16:50:11,712 - INFO  [main:LightWeightGSet@397] - 0.25% max memory 481.5 MB = 1.2 MB
-#15 2.275 2025-04-02 16:50:11,712 - INFO  [main:LightWeightGSet@402] - capacity      = 2^17 = 131072 entries
-#15 2.287 2025-04-02 16:50:11,724 - INFO  [main:TopMetrics@76] - NNTop conf: dfs.namenode.top.window.num.buckets = 10
-#15 2.287 2025-04-02 16:50:11,724 - INFO  [main:TopMetrics@78] - NNTop conf: dfs.namenode.top.num.users = 10
-#15 2.287 2025-04-02 16:50:11,724 - INFO  [main:TopMetrics@80] - NNTop conf: dfs.namenode.top.windows.minutes = 1,5,25
-#15 2.294 2025-04-02 16:50:11,730 - INFO  [main:FSNamesystem@983] - Retry cache on namenode is enabled
-#15 2.294 2025-04-02 16:50:11,731 - INFO  [main:FSNamesystem@991] - Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
-#15 2.297 2025-04-02 16:50:11,734 - INFO  [main:LightWeightGSet@395] - Computing capacity for map NameNodeRetryCache
-#15 2.297 2025-04-02 16:50:11,734 - INFO  [main:LightWeightGSet@396] - VM type       = 64-bit
-#15 2.297 2025-04-02 16:50:11,734 - INFO  [main:LightWeightGSet@397] - 0.029999999329447746% max memory 481.5 MB = 147.9 KB
-#15 2.297 2025-04-02 16:50:11,734 - INFO  [main:LightWeightGSet@402] - capacity      = 2^14 = 16384 entries
-#15 2.340 2025-04-02 16:50:11,777 - INFO  [main:FSImage@170] - Allocated new BlockPoolId: BP-914403453-127.0.0.1-1743591911764
-#15 2.364 2025-04-02 16:50:11,801 - INFO  [main:NNStorage@583] - Storage directory /var/lib/hadoop-hdfs/cache/name has been successfully formatted.
-#15 2.384 2025-04-02 16:50:11,820 - INFO  [FSImageSaver for /var/lib/hadoop-hdfs/cache/name of type IMAGE_AND_EDITS:FSImageFormatProtobuf$Saver@455] - Saving image file /var/lib/hadoop-hdfs/cache/name/current/fsimage.ckpt_0000000000000000000 using no compression
-#15 2.548 2025-04-02 16:50:11,985 - INFO  [FSImageSaver for /var/lib/hadoop-hdfs/cache/name of type IMAGE_AND_EDITS:FSImageFormatProtobuf$Saver@459] - Image file /var/lib/hadoop-hdfs/cache/name/current/fsimage.ckpt_0000000000000000000 of size 389 bytes saved in 0 seconds .
-#15 2.573 2025-04-02 16:50:12,010 - INFO  [main:NNStorageRetentionManager@203] - Going to retain 1 images with txid >= 0
-#15 2.582 2025-04-02 16:50:12,018 - INFO  [shutdown-hook-0:LogAdapter@51] - SHUTDOWN_MSG: 
-#15 2.582 /************************************************************
-#15 2.582 SHUTDOWN_MSG: Shutting down NameNode at localhost/127.0.0.1
-#15 2.582 ************************************************************/
-#15 2.621 + sleep 15
-#15 2.622 + su -c 'hdfs namenode  2>&1 > /var/log/hadoop-hdfs/hadoop-hdfs-namenode.log' hdfs
-#15 2.719 WARNING: HADOOP_NAMENODE_OPTS has been replaced by HDFS_NAMENODE_OPTS. Using value of HADOOP_NAMENODE_OPTS.
-#15 17.62 + /usr/hdp/current/hadoop-client/libexec/init-hdfs.sh
-#15 17.63 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /tmp'
-#15 20.76 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 1777 /tmp'
-#15 23.68 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /var'
-#15 26.52 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /var/log'
-#15 29.35 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 1775 /var/log'
-#15 32.18 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown yarn:mapred /var/log'
-#15 34.90 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /tmp/hadoop-yarn'
-#15 37.77 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown -R mapred:mapred /tmp/hadoop-yarn'
-#15 40.62 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /tmp/hadoop-yarn'
-#15 43.40 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir -p /var/log/hadoop-yarn/apps'
-#15 46.23 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 1777 /var/log/hadoop-yarn/apps'
-#15 49.10 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown yarn:mapred /var/log/hadoop-yarn/apps'
-#15 52.05 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /hbase'
-#15 54.90 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown hbase:hbase /hbase'
-#15 57.76 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /solr'
-#15 60.60 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown solr:solr /solr'
-#15 63.35 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /benchmarks'
-#15 66.26 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /benchmarks'
-#15 69.07 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user'
-#15 72.00 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod 755 /user'
-#15 74.72 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown hdfs  /user'
-#15 77.40 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/history'
-#15 80.26 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown mapred:mapred /user/history'
-#15 83.10 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod 755 /user/history'
-#15 85.91 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/jenkins'
-#15 88.68 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /user/jenkins'
-#15 91.55 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown jenkins /user/jenkins'
-#15 94.45 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/hive'
-#15 97.23 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /user/hive'
-#15 100.0 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown hive /user/hive'
-#15 103.0 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/root'
-#15 106.0 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /user/root'
-#15 108.9 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown root /user/root'
-#15 111.8 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/hue'
-#15 114.6 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /user/hue'
-#15 117.3 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown hue /user/hue'
-#15 120.0 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/sqoop'
-#15 122.8 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /user/sqoop'
-#15 125.5 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown sqoop /user/sqoop'
-#15 128.3 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie'
-#15 131.1 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 777 /user/oozie'
-#15 134.1 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown -R oozie /user/oozie'
-#15 136.8 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie/share'
-#15 139.7 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie/share/lib'
-#15 142.6 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie/share/lib/hive'
-#15 145.4 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie/share/lib/mapreduce-streaming'
-#15 148.2 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie/share/lib/distcp'
-#15 151.2 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/oozie/share/lib/pig'
-#15 154.1 + ls '/usr/lib/hive/lib/*.jar'
-#15 154.1 + ls '/usr/lib/hadoop-mapreduce/hadoop-streaming*.jar'
-#15 154.1 + ls '/usr/lib/hadoop-mapreduce/hadoop-distcp*.jar'
-#15 154.1 + ls '/usr/lib/pig/lib/*.jar' '/usr/lib/pig/*.jar'
-#15 154.1 + '[' '' = -u ']'
-#15 154.1 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/yarn && /usr/bin/hadoop fs -chown yarn:yarn /user/yarn'
-#15 159.7 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod -R 1777 /tmp/hadoop-yarn'
-#15 162.6 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /tmp/hadoop-yarn/staging && /usr/bin/hadoop fs -chown mapred:mapred /tmp/hadoop-yarn/staging && /usr/bin/hadoop fs -chmod -R 1777 /tmp/hadoop-yarn/staging'
-#15 171.0 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /tmp/hadoop-yarn/staging/history && /usr/bin/hadoop fs -chown mapred:mapred /tmp/hadoop-yarn/staging/history && /usr/bin/hadoop fs -chmod -R 1777 /tmp/hadoop-yarn/staging/history'
-#15 179.4 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -mkdir /user/hive/warehouse'
-#15 182.2 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chmod 1777 /user/hive/warehouse'
-#15 185.0 + su -s /bin/bash hdfs -c '/usr/bin/hadoop fs -chown hive /user/hive/warehouse'
-#15 187.9 + killall java
-#15 187.9 + ln -s /usr/bin/resolveip /usr/libexec
-#15 187.9 + mysql_install_db
-#15 188.0 Installing MariaDB/MySQL system tables in '/var/lib/mysql' ...
-#15 188.0 250402 16:53:17 [Note] /usr/libexec/mysqld (mysqld 5.5.68-MariaDB) starting as process 3938 ...
-#15 188.3 OK
-#15 188.3 Filling help tables...
-#15 188.3 250402 16:53:17 [Note] /usr/libexec/mysqld (mysqld 5.5.68-MariaDB) starting as process 3946 ...
-#15 188.5 OK
-#15 188.5 
-#15 188.5 To start mysqld at boot time you have to copy
-#15 188.5 support-files/mysql.server to the right place for your system
-#15 188.5 
-#15 188.5 PLEASE REMEMBER TO SET A PASSWORD FOR THE MariaDB root USER !
-#15 188.5 To do so, start the server, then issue the following commands:
-#15 188.5 
-#15 188.5 '/usr/bin/mysqladmin' -u root password 'new-password'
-#15 188.5 '/usr/bin/mysqladmin' -u root -h buildkitsandbox password 'new-password'
-#15 188.5 
-#15 188.5 Alternatively you can run:
-#15 188.5 '/usr/bin/mysql_secure_installation'
-#15 188.5 
-#15 188.5 which will also give you the option of removing the test
-#15 188.5 databases and anonymous user created by default.  This is
-#15 188.5 strongly recommended for production servers.
-#15 188.5 
-#15 188.5 See the MariaDB Knowledgebase at http://mariadb.com/kb or the
-#15 188.5 MySQL manual for more instructions.
-#15 188.5 
-#15 188.5 You can start the MariaDB daemon with:
-#15 188.5 cd '/usr' ; /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
-#15 188.5 
-#15 188.5 You can test the MariaDB daemon with mysql-test-run.pl
-#15 188.5 cd '/usr/mysql-test' ; perl mysql-test-run.pl
-#15 188.5 
-#15 188.5 Please report any problems at http://mariadb.org/jira
-#15 188.5 
-#15 188.5 The latest information about MariaDB is available at http://mariadb.org/.
-#15 188.5 You can find additional information about the MySQL part at:
-#15 188.5 http://dev.mysql.com
-#15 188.5 Consider joining MariaDB's strong and vibrant community:
-#15 188.5 https://mariadb.org/get-involved/
-#15 188.5 
-#15 188.5 + chown -R mysql:mysql /var/lib/mysql
-#15 188.5 + sleep 10s
-#15 188.5 + /usr/bin/mysqld_safe
-#15 188.7 250402 16:53:18 mysqld_safe Logging to '/var/log/mariadb/mariadb.log'.
-#15 188.7 250402 16:53:18 mysqld_safe Starting mysqld daemon with databases from /var/lib/mysql
-#15 198.5 + echo 'GRANT ALL PRIVILEGES ON *.* TO '\''root'\''@'\''%'\'' WITH GRANT OPTION; FLUSH PRIVILEGES;'
-#15 198.5 + mysql
-#15 198.5 + echo 'CREATE DATABASE metastore;'
-#15 198.5 + mysql
-#15 198.6 + /usr/bin/mysqladmin -u root password root
-#15 198.6 + /usr/hdp/current/hive-client/bin/schematool -dbType mysql -initSchema
-#15 198.7 WARNING: Use "yarn jar" to launch YARN applications.
-#15 199.6 SLF4J: Class path contains multiple SLF4J bindings.
-#15 199.6 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hive/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 199.6 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hadoop/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 199.6 SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-#15 199.6 SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-#15 203.2 Metastore connection URL:	 jdbc:mysql://localhost/metastore
-#15 203.2 Metastore Connection Driver :	 com.mysql.jdbc.Driver
-#15 203.2 Metastore connection User:	 root
-#15 203.7 Starting metastore schema initialization to 3.1.0
-#15 203.7 Initialization script hive-schema-3.1.0.mysql.sql
-#15 203.9 
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0  
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0 
-#15 204.0     
-#15 204.1 
-#15 204.1 
-#15 204.1 
-#15 204.1  
-#15 204.1 
-#15 204.1 
-#15 204.1 
-#15 204.1      
-#15 204.1 
-#15 204.1 
-#15 204.1 
-#15 204.1      
-#15 204.1 
-#15 204.1   
-#15 204.2 
-#15 204.2 
-#15 204.2         
-#15 204.2 
-#15 204.2 
-#15 204.2 
-#15 204.2            
-#15 204.2 
-#15 204.2 
-#15 204.2 
-#15 204.2           
-#15 204.3 
-#15 204.3 
-#15 204.3 
-#15 204.3            
-#15 204.3 
-#15 204.3 
-#15 204.3 
-#15 204.3      
-#15 204.4 
-#15 204.4 
-#15 204.4 
-#15 204.4       
-#15 204.4 
-#15 204.4 
-#15 204.4 
-#15 204.4         
-#15 204.4 
-#15 204.4 
-#15 204.4 
-#15 204.4        
-#15 204.5 
-#15 204.5 
-#15 204.5 
-#15 204.5       
-#15 204.5 
-#15 204.5 
-#15 204.5 
-#15 204.5      
-#15 204.5 
-#15 204.5 
-#15 204.5 
-#15 204.5      
-#15 204.5 
-#15 204.5 
-#15 204.5 
-#15 204.5               
-#15 204.6 
-#15 204.6 
-#15 204.6 
-#15 204.6             
-#15 204.6 
-#15 204.6 
-#15 204.6 
-#15 204.6     
-#15 204.6 
-#15 204.6 
-#15 204.6 
-#15 204.6          
-#15 204.7 
-#15 204.7 
-#15 204.7 
-#15 204.7          
-#15 204.7 
-#15 204.7 
-#15 204.7 
-#15 204.7      
-#15 204.7 
-#15 204.7 
-#15 204.7 
-#15 204.7   
-#15 204.7 
-#15 204.7  
-#15 204.7 
-#15 204.7 
-#15 204.7        
-#15 204.8 
-#15 204.8 
-#15 204.8 
-#15 204.8      
-#15 204.8 
-#15 204.8 
-#15 204.8 
-#15 204.8     
-#15 204.8 
-#15 204.8 
-#15 204.8 
-#15 204.8        
-#15 204.9 
-#15 204.9 
-#15 204.9 
-#15 204.9  
-#15 204.9 
-#15 204.9 
-#15 204.9 
-#15 204.9      
-#15 204.9 
-#15 204.9 
-#15 204.9 
-#15 204.9       
-#15 204.9 
-#15 204.9 
-#15 204.9 
-#15 204.9     
-#15 205.0 
-#15 205.0 
-#15 205.0 
-#15 205.0      
-#15 205.0 
-#15 205.0 
-#15 205.0 
-#15 205.0      
-#15 205.0 
-#15 205.0  
-#15 205.0 
-#15 205.0 
-#15 205.0             
-#15 205.1 
-#15 205.1 
-#15 205.1 
-#15 205.1     
-#15 205.1 
-#15 205.1 
-#15 205.1 
-#15 205.1              
-#15 205.1 
-#15 205.1 
-#15 205.1 
-#15 205.1             
-#15 205.2 
-#15 205.2               
-#15 205.2  
-#15 205.2                
-#15 205.3  
-#15 205.3 
-#15 205.3 
-#15 205.3      
-#15 205.3 
-#15 205.3 
-#15 205.3 
-#15 205.3       
-#15 205.3   
-#15 205.3   
-#15 205.3   
-#15 205.4        
-#15 205.4     
-#15 205.4     
-#15 205.4   
-#15 205.4   
-#15 205.4       
-#15 205.5  
-#15 205.5  
-#15 205.5   
-#15 205.5    
-#15 205.5      
-#15 205.5  
-#15 205.5      
-#15 205.6     
-#15 205.6       
-#15 205.6     
-#15 205.6    
-#15 205.6 
-#15 205.6    
-#15 205.7  
-#15 205.7  
-#15 205.7 
-#15 205.7        
-#15 205.7 
-#15 205.7  
-#15 205.7 
-#15 205.7      
-#15 205.8      
-#15 205.8  
-#15 205.8 
-#15 205.8   
-#15 205.8    
-#15 205.8   
-#15 205.8  
-#15 205.9  
-#15 205.9   
-#15 205.9  
-#15 205.9  
-#15 205.9 
-#15 206.0    
-#15 206.0      
-#15 206.0        
-#15 206.0   
-#15 206.0  
-#15 206.0 
-#15 206.1      
-#15 206.1  
-#15 206.1  
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 
-#15 206.1 Initialization script completed
-#15 206.1 schemaTool completed
-#15 206.2 + killall mysqld
-#15 206.2 + sleep 10s
-#15 216.2 + mkdir /var/log/mysql/
-#15 216.2 + chown -R mysql:mysql /var/log/mysql/
-#15 216.2 + chmod 0700 /root
-#15 216.2 + chmod 0700 /root/.ssh
-#15 216.2 + beeline -n hive -e 'SELECT 1'
-#15 216.2 + supervisord -c /etc/supervisord.conf
-#15 216.4 2025-04-02 16:53:45,804 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
-#15 216.4 2025-04-02 16:53:45,805 INFO Included extra file "/etc/supervisord.d/hdfs-datanode.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,805 INFO Included extra file "/etc/supervisord.d/hdfs-namenode.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,806 INFO Included extra file "/etc/supervisord.d/hive-metastore.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,806 INFO Included extra file "/etc/supervisord.d/hive-server2.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,806 INFO Included extra file "/etc/supervisord.d/mysql-metastore.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,806 INFO Included extra file "/etc/supervisord.d/socks-proxy.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,807 INFO Included extra file "/etc/supervisord.d/sshd.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,807 INFO Included extra file "/etc/supervisord.d/yarn-nodemanager.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,807 INFO Included extra file "/etc/supervisord.d/yarn-resourcemanager.conf" during parsing
-#15 216.4 2025-04-02 16:53:45,815 INFO RPC interface 'supervisor' initialized
-#15 216.4 2025-04-02 16:53:45,815 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-#15 216.4 2025-04-02 16:53:45,815 INFO supervisord started with pid 4229
-#15 217.4 2025-04-02 16:53:46,819 INFO spawned: 'mysql-metastore' with pid 4304
-#15 217.4 2025-04-02 16:53:46,822 INFO spawned: 'hdfs-namenode' with pid 4305
-#15 217.4 2025-04-02 16:53:46,826 INFO spawned: 'hive-metastore' with pid 4306
-#15 217.4 2025-04-02 16:53:46,831 INFO spawned: 'hdfs-datanode' with pid 4307
-#15 217.4 2025-04-02 16:53:46,836 INFO spawned: 'yarn-resourcemanager' with pid 4308
-#15 217.4 2025-04-02 16:53:46,842 INFO spawned: 'sshd' with pid 4309
-#15 217.4 2025-04-02 16:53:46,848 INFO spawned: 'hive-server2' with pid 4310
-#15 217.4 2025-04-02 16:53:46,853 INFO spawned: 'socks-proxy' with pid 4311
-#15 217.4 2025-04-02 16:53:46,859 INFO spawned: 'yarn-nodemanager' with pid 4315
-#15 217.7 WARNING: Use "yarn jar" to launch YARN applications.
-#15 219.5 2025-04-02 16:53:48,955 INFO success: mysql-metastore entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,955 INFO success: hdfs-namenode entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,955 INFO success: hive-metastore entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,955 INFO success: hdfs-datanode entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,955 INFO success: yarn-resourcemanager entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,956 INFO success: sshd entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,956 INFO success: hive-server2 entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,956 INFO success: socks-proxy entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.5 2025-04-02 16:53:48,956 INFO success: yarn-nodemanager entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
-#15 219.6 SLF4J: Class path contains multiple SLF4J bindings.
-#15 219.6 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hive/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 219.6 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hadoop/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 219.6 SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-#15 219.6 SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-#15 226.4 Connecting to jdbc:hive2://localhost:10000/default;password=hive;user=hive
-#15 226.8 25/04/02 16:53:56 [main]: WARN jdbc.HiveConnection: Failed to connect to localhost:10000
-#15 226.8 Could not open connection to the HS2 server. Please check the server URI and if the URI is correct, then ask the administrator to check the server status.
-#15 226.8 Error: Could not open client transport with JDBC Uri: jdbc:hive2://localhost:10000/default;password=hive;user=hive: java.net.ConnectException: Connection refused (Connection refused) (state=08S01,code=0)
-#15 226.8 Cannot run commands specified using -e. No current connection
-#15 227.0 + echo 'Waiting for HiveServer2 ...'
-#15 227.0 + sleep 10s
-#15 227.0 Waiting for HiveServer2 ...
-#15 237.0 + beeline -n hive -e 'SELECT 1'
-#15 239.0 WARNING: Use "yarn jar" to launch YARN applications.
-#15 240.1 SLF4J: Class path contains multiple SLF4J bindings.
-#15 240.1 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hive/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 240.1 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hadoop/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 240.1 SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-#15 240.1 SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-#15 244.8 Connecting to jdbc:hive2://localhost:10000/default;password=hive;user=hive
-#15 245.6 Connected to: Apache Hive (version 3.1.0.3.1.0.0-78)
-#15 245.6 Driver: Hive JDBC (version 3.1.0.3.1.0.0-78)
-#15 245.6 Transaction isolation: TRANSACTION_REPEATABLE_READ
-#15 251.4 INFO  : Compiling command(queryId=hive_20250402165415_5fe02b50-e925-4368-b8e1-03f059b1dd1d): SELECT 1
-#15 251.4 INFO  : Semantic Analysis Completed (retrial = false)
-#15 251.4 INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:_c0, type:int, comment:null)], properties:null)
-#15 251.4 INFO  : Completed compiling command(queryId=hive_20250402165415_5fe02b50-e925-4368-b8e1-03f059b1dd1d); Time taken: 5.248 seconds
-#15 251.4 INFO  : Executing command(queryId=hive_20250402165415_5fe02b50-e925-4368-b8e1-03f059b1dd1d): SELECT 1
-#15 251.4 INFO  : Completed executing command(queryId=hive_20250402165415_5fe02b50-e925-4368-b8e1-03f059b1dd1d); Time taken: 0.005 seconds
-#15 251.4 INFO  : OK
-#15 251.5 +------+
-#15 251.5 | _c0  |
-#15 251.5 +------+
-#15 251.5 | 1    |
-#15 251.5 +------+
-#15 251.5 1 row selected (5.858 seconds)
-#15 251.6 Beeline version 3.1.0.3.1.0.0-78 by Apache Hive
-#15 251.6 Closing: 0: jdbc:hive2://localhost:10000/default;password=hive;user=hive
-#15 251.8 + /usr/hdp/current/hive-client/bin/schematool -userName hive -metaDbType mysql -dbType hive -initSchema -url jdbc:hive2://localhost:10000/default -driver org.apache.hive.jdbc.HiveDriver
-#15 252.0 WARNING: Use "yarn jar" to launch YARN applications.
-#15 253.0 SLF4J: Class path contains multiple SLF4J bindings.
-#15 253.0 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hive/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 253.0 SLF4J: Found binding in [jar:file:/usr/hdp/3.1.0.0-78/hadoop/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-#15 253.0 SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-#15 253.0 SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-#15 257.0 Metastore connection URL:	 jdbc:hive2://localhost:10000/default
-#15 257.0 Metastore Connection Driver :	 org.apache.hive.jdbc.HiveDriver
-#15 257.0 Metastore connection User:	 hive
-#15 257.6 Starting metastore schema initialization to 3.1.0
-#15 257.6 Initialization script hive-schema-3.1.0.hive.sql
-#15 257.9 
-#15 257.9 
-#15 258.5 
-#15 258.6      
-#15 259.8    
-#15 260.0      
-#15 260.3     
-#15 260.6      
-#15 260.8        
-#15 261.1        
-#15 261.4      
-#15 262.1      
-#15 262.4      
-#15 262.7      
-#15 263.0          
-#15 263.2         
-#15 263.5     
-#15 263.9        
-#15 264.1        
-#15 264.5     
-#15 264.8     
-#15 265.0     
-#15 265.3     
-#15 265.6      
-#15 265.8      
-#15 266.1     
-#15 266.3      
-#15 266.5      
-#15 266.8      
-#15 267.0     
-#15 267.2         
-#15 267.5      
-#15 267.7    
-#15 267.9         
-#15 268.2        
-#15 268.4             
-#15 268.6              
-#15 269.0  
-#15 269.4     
-#15 269.7       
-#15 269.9           
-#15 270.2        
-#15 271.4        
-#15 271.9       
-#15 272.2      
-#15 272.4       
-#15 272.6            
-#15 272.8        
-#15 273.1 
-#15 273.2 
-#15 273.3         
-#15 275.2             
-#15 276.5            
-#15 278.0                                                              
-#15 280.0             
-#15 281.4           
-#15 282.4 
-#15 282.5 
-#15 282.5 Initialization script completed
-#15 283.5 schemaTool completed
-#15 283.5 + supervisorctl stop all
-#15 283.7 2025-04-02 16:54:53,100 INFO waiting for mysql-metastore to stop
-#15 283.7 2025-04-02 16:54:53,100 INFO waiting for hdfs-namenode to stop
-#15 283.7 2025-04-02 16:54:53,100 INFO waiting for hive-metastore to stop
-#15 283.7 2025-04-02 16:54:53,100 INFO waiting for hdfs-datanode to stop
-#15 283.7 2025-04-02 16:54:53,100 INFO waiting for yarn-resourcemanager to stop
-#15 283.7 2025-04-02 16:54:53,101 INFO waiting for sshd to stop
-#15 283.7 2025-04-02 16:54:53,101 INFO waiting for hive-server2 to stop
-#15 283.7 2025-04-02 16:54:53,104 INFO waiting for socks-proxy to stop
-#15 283.7 2025-04-02 16:54:53,104 INFO waiting for yarn-nodemanager to stop
-#15 283.7 2025-04-02 16:54:53,105 INFO stopped: sshd (exit status 0)
-#15 283.7 2025-04-02 16:54:53,105 INFO stopped: socks-proxy (exit status 0)
-#15 284.0 2025-04-02 16:54:53,389 WARN stopped: yarn-resourcemanager (exit status 143)
-#15 284.1 2025-04-02 16:54:53,502 WARN stopped: hdfs-datanode (exit status 143)
-#15 284.1 2025-04-02 16:54:53,523 WARN stopped: hdfs-namenode (exit status 143)
-#15 284.1 2025-04-02 16:54:53,524 WARN stopped: hive-metastore (exit status 143)
-#15 284.5 2025-04-02 16:54:53,971 WARN stopped: hive-server2 (exit status 143)
-#15 285.2 2025-04-02 16:54:54,606 WARN stopped: yarn-nodemanager (exit status 143)
-#15 286.2 2025-04-02 16:54:55,608 INFO waiting for mysql-metastore to stop
-#15 288.2 2025-04-02 16:54:57,612 INFO waiting for mysql-metastore to stop
-#15 290.2 2025-04-02 16:54:59,616 INFO waiting for mysql-metastore to stop
-#15 292.2 2025-04-02 16:55:01,620 INFO waiting for mysql-metastore to stop
-#15 294.2 2025-04-02 16:55:03,623 WARN killing 'mysql-metastore' (4304) with SIGKILL
-#15 294.2 2025-04-02 16:55:03,624 INFO waiting for mysql-metastore to stop
-#15 294.2 2025-04-02 16:55:03,625 WARN stopped: mysql-metastore (terminated by SIGKILL)
-#15 295.2 sshd: stopped
-#15 295.2 socks-proxy: stopped
-#15 295.2 yarn-resourcemanager: stopped
-#15 295.2 hdfs-namenode: stopped
-#15 295.2 hive-metastore: stopped
-#15 295.2 hdfs-datanode: stopped
-#15 295.2 hive-server2: stopped
-#15 295.2 yarn-nodemanager: stopped
-#15 295.2 mysql-metastore: stopped
-#15 DONE 295.3s
-
-#16 [12/12] RUN set -xeu;     echo "supervisorctl restart all" >> ~root/.bash_history;     for user in root hive hdfs; do         sudo -u "${user}" bash -c ' echo "netstat -ltnp" >> ~/.bash_history ';         sudo -u "${user}" bash -c ' echo "beeline -n hive" >> ~/.bash_history ';         sudo -u "${user}" bash -c ' echo "hdfs dfs -ls -R /user/hive/warehouse" >> ~/.bash_history ';         sudo -u "${user}" bash -c ' mkdir -p ~/.beeline ';         sudo -u "${user}" bash -c ' echo "SELECT current_user();" >> ~/.beeline/history ';     done
-#16 0.503 + echo 'supervisorctl restart all'
-#16 0.503 + for user in root hive hdfs
-#16 0.503 + sudo -u root bash -c ' echo "netstat -ltnp" >> ~/.bash_history '
-#16 0.546 + sudo -u root bash -c ' echo "beeline -n hive" >> ~/.bash_history '
-#16 0.580 + sudo -u root bash -c ' echo "hdfs dfs -ls -R /user/hive/warehouse" >> ~/.bash_history '
-#16 0.610 + sudo -u root bash -c ' mkdir -p ~/.beeline '
-#16 0.641 + sudo -u root bash -c ' echo "SELECT current_user();" >> ~/.beeline/history '
-#16 0.672 + for user in root hive hdfs
-#16 0.672 + sudo -u hive bash -c ' echo "netstat -ltnp" >> ~/.bash_history '
-#16 0.701 + sudo -u hive bash -c ' echo "beeline -n hive" >> ~/.bash_history '
-#16 0.723 + sudo -u hive bash -c ' echo "hdfs dfs -ls -R /user/hive/warehouse" >> ~/.bash_history '
-#16 0.750 + sudo -u hive bash -c ' mkdir -p ~/.beeline '
-#16 0.778 + sudo -u hive bash -c ' echo "SELECT current_user();" >> ~/.beeline/history '
-#16 0.803 + for user in root hive hdfs
-#16 0.803 + sudo -u hdfs bash -c ' echo "netstat -ltnp" >> ~/.bash_history '
-#16 0.827 + sudo -u hdfs bash -c ' echo "beeline -n hive" >> ~/.bash_history '
-#16 0.849 + sudo -u hdfs bash -c ' echo "hdfs dfs -ls -R /user/hive/warehouse" >> ~/.bash_history '
-#16 0.875 + sudo -u hdfs bash -c ' mkdir -p ~/.beeline '
-#16 0.903 + sudo -u hdfs bash -c ' echo "SELECT current_user();" >> ~/.beeline/history '
-#16 DONE 1.0s
-
-#17 exporting to image
-#17 exporting layers
-#17 exporting layers 3.7s done
-#17 writing image sha256:31ba828ba348a76c6c6866acad6cfa895ac2cacaf782ceee5f5544926cd3e68d done
-#17 naming to docker.io/prestodb/hdp3.1-hive:latest 0.0s done
-#17 DONE 3.8s
-
- [33m1 warning found (use docker --debug to expand):
-[0m - JSONArgsRecommended: JSON arguments recommended for CMD to prevent unintended behavior related to OS signals (line 90)
