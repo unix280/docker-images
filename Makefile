@@ -65,6 +65,8 @@ FLAGS := $(foreach dockerfile,$(DOCKERFILES),$(FLAGDIR)/$(dockerfile:/Dockerfile
 RELEASE_TAGS := $(VERSION_TAGS) $(GIT_HASH_TAGS) $(LATEST_TAGS)
 SNAPSHOT_TAGS := $(GIT_HASH_TAGS)
 
+BUILD_ARGS_prestodb/hdp3.1-hive := --add-host="hadoop-master:127.0.0.1"
+
 #
 # Make a list of the Docker images we depend on, but aren't built from
 # Dockerfiles in this repository. Order doesn't matter, but sort() has the
@@ -191,7 +193,7 @@ $(LATEST_TAGS): %@latest: %/Dockerfile %-parent-check
 	@echo
 	@echo "Building [$@] image"
 	@echo
-	cd $* && time $(SHELL) -c "( tar -czh . | docker build ${BUILD_ARGS} $(DBFLAGS_$*) -t $(call docker-tag,$@) --label $(LABEL) - )"
+	cd $* && time $(SHELL) -c "( tar -czh . | docker build ${BUILD_ARGS} ${BUILD_ARGS_$*} $(DBFLAGS_$*) -t $(call docker-tag,$@) --label $(LABEL) - )"
 	docker history $(call docker-tag,$@)
 
 $(VERSION_TAGS): %@$(VERSION): %@latest
@@ -227,7 +229,7 @@ $(BUILD_TAGS): %@build: %/Dockerfile %-parent-check
 	@echo
 	@echo "Building [$@] image"
 	@echo
-	cd $* && time $(SHELL) -c "( tar -czh . | docker build ${BUILD_ARGS} $(DBFLAGS_$*) -t $(call docker-tag,$@) --label $(LABEL) - )"
+	cd $* && time $(SHELL) -c "( tar -czh . | docker build ${BUILD_ARGS} ${BUILD_ARGS_$*} $(DBFLAGS_$*) -t $(call docker-tag,$@) --label $(LABEL) - )"
 	docker tag $(call docker-tag,$@) $(shell $(SHELL) $(LABEL_PARENT_SH) $*:latest)
 #
 # Targets and variables for creating the dependency graph of the docker images
