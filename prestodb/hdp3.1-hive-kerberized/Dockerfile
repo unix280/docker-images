@@ -21,6 +21,8 @@ RUN yum install -y krb5-libs krb5-server krb5-workstation && \
   # COPY CONFIGURATION FILES
   cp -a /tmp/files/etc/* /etc/ && \
   cp -a /tmp/files/var/* /var/ && \
+  chown -R root:hadoop /etc/hadoop /etc/hive && \
+  chown -R root:root /etc/supervisord* /var/kerberos && \
   # CREATE KERBEROS DATABASE
   /usr/sbin/kdb5_util create -s -P password && \
   \
@@ -96,8 +98,6 @@ RUN yum install -y krb5-libs krb5-server krb5-workstation && \
   yum -q clean all && rm -rf /var/cache/yum && rm -rf /tmp/* /var/tmp/*
 
 # EXPOSE KERBEROS PORTS
-EXPOSE	88
-EXPOSE	89
-EXPOSE	749
+EXPOSE	88 89 749
 
 CMD supervisord -c /etc/supervisord.conf

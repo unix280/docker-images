@@ -54,6 +54,8 @@ RUN set -xeu; \
     # copy configurations
     cp -a /tmp/files/root/* /root/ && \
       cp -a /tmp/files/etc/* /etc/ && \
+      chown -R root:hadoop /etc/hadoop /etc/hive /etc/tez && \
+      chown -R root:root /etc/supervisord* /var/kerberos && \
       chown -R root:root /root && \
       chmod 0700 /root /root/.ssh && \
     # setup hadoop and hive
@@ -71,16 +73,13 @@ RUN set -xeu; \
     yum -q clean all && rm -rf /var/cache/yum && rm -rf /tmp/* /var/tmp/*
 
 # HDFS ports
-EXPOSE 1004 1006 8020 9866 9867 9870 9864 50470
-
-# YARN ports
-EXPOSE 8030 8031 8032 8033 8040 8041 8042 8088 10020 19888
-
-# HIVE ports
-EXPOSE 9083 10000
-
-# SOCKS port
-EXPOSE 1180
+EXPOSE 1004 1006 8020 9866 9867 9870 9864 50470 \
+  # YARN ports
+  8030 8031 8032 8033 8040 8041 8042 8088 10020 19888 \
+  # HIVE ports
+  9083 10000 \
+  # SOCKS port
+  1180
 
 CMD supervisord -c /etc/supervisord.conf
 
