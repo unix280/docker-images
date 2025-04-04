@@ -25,6 +25,7 @@ BUILDDIR=build
 DEPDIR=$(BUILDDIR)/depends
 FLAGDIR=$(BUILDDIR)/flags
 ORGDIR=prestodb
+FORCE_PULL?=false
 
 #
 # This should be the only place you need to touch to update the version of Java
@@ -221,7 +222,9 @@ $(IMAGE_DIRS): %: %@latest
 # this repository.
 #
 $(EXTERNAL_DEPS): %:
-	if ! docker image inspect $(call docker-tag,$@) >/dev/null 2>&1; then \
+	if [ "$(FORCE_PULL)" = "true" ]; then \
+		docker pull $(call docker-tag,$@); \
+	elif ! docker image inspect $(call docker-tag,$@) >/dev/null 2>&1; then \
 		docker pull $(call docker-tag,$@); \
 	fi
 
