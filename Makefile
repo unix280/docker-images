@@ -55,7 +55,7 @@ IMAGE_DIRS := $(shell find $(ORGDIR) -type f -name Dockerfile -exec dirname {} \
 UNLABELLED_TAGS := $(addsuffix @unlabelled,$(IMAGE_DIRS))
 PARENT_CHECKS := $(addsuffix -parent-check,$(IMAGE_DIRS))
 LATEST_TAGS := $(addsuffix @latest,$(IMAGE_DIRS))
-BUILD_TAGS := $(addsuffix @build,$(IMAGE_DIRS))
+LOCAL_TAGS := $(addsuffix @local,$(IMAGE_DIRS))
 VERSION_TAGS := $(addsuffix @$(VERSION),$(IMAGE_DIRS))
 GIT_HASH := $(shell git rev-parse --short HEAD)
 GIT_HASH_TAGS := $(addsuffix @$(GIT_HASH),$(IMAGE_DIRS))
@@ -228,9 +228,9 @@ $(EXTERNAL_DEPS): %:
 		docker pull $(call docker-tag,$@); \
 	fi
 
-$(BUILD_TAGS): %@build: %/Dockerfile %-parent-check
+$(LOCAL_TAGS): %@local: %/Dockerfile %-parent-check
 	@echo
-	@echo "Building [$@] image"
+	@echo "Building [$@] image locally"
 	@echo
 	cd $* && time $(SHELL) -c "( tar -czh . | docker build ${BUILD_ARGS} ${BUILD_ARGS_$*} $(DBFLAGS_$*) -t $(call docker-tag,$@) --label $(LABEL) - )"
 	docker tag $(call docker-tag,$@) $(shell $(SHELL) $(LABEL_PARENT_SH) $*:latest)
