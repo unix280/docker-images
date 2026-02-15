@@ -28,6 +28,8 @@ on:
 env:
   GIT_CI_USER: ${{ vars.GIT_CI_USER || 'prestodb-ci' }}
   GIT_CI_EMAIL: ${{ vars.GIT_CI_EMAIL || 'ci@lists.prestodb.io' }}
+  LOCAL_IMAGES: ${{ vars.LOCAL_IMAGES || '' }}
+  MULTI_IMAGES: ${{ vars.MULTI_IMAGES || '' }}
 
 jobs:
   release-branch:
@@ -127,6 +129,9 @@ jobs:
           git config --global alias.ls 'log --pretty=format:"%cd %h %ce: %s" --date=short --no-merges'
           git ls -5
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -136,28 +141,60 @@ jobs:
       - name: Release Selected Images
         env:
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          DOCKER_ORG: ${{ github.repository_owner }}
+          LOCAL_IMAGES: ${{ env.LOCAL_IMAGES }}
+          MULTI_IMAGES: ${{ env.MULTI_IMAGES }}
         run: |
           IMAGES="${{ github.event.inputs.images }}"
 
           IFS=',' read -ra IMAGE_ARRAY <<< "$IMAGES"
+          IFS=',' read -ra LOCAL_ARRAY <<< "$LOCAL_IMAGES"
+          IFS=',' read -ra MULTI_ARRAY <<< "$MULTI_IMAGES"
+
+          # Function to check if image is in array
+          contains() {
+            local item="$1"
+            shift
+            for elem in "$@"; do
+              [[ "$elem" == "$item" ]] && return 0
+            done
+            return 1
+          }
 
           for IMAGE in "${IMAGE_ARRAY[@]}"; do
-            echo "Building image: $IMAGE"
-            if [ "$IMAGE" = "centos7-oj8" ]; then
+            echo "Processing image: $IMAGE"
+
+            if contains "$IMAGE" "${MULTI_ARRAY[@]}"; then
+              echo "Building multi-arch image: $IMAGE"
+              make "prestodb/$IMAGE@multi" DOCKER_ORG="${DOCKER_ORG}" VERSION="${RELEASE_VERSION}"
+              echo "Multi-arch image built and pushed"
+
+            elif contains "$IMAGE" "${LOCAL_ARRAY[@]}"; then
+              echo "Building local single-arch image: $IMAGE"
               make "prestodb/$IMAGE@local"
+
+              # Tag and push the local image
+              echo "Tagging and pushing image: $IMAGE"
+              docker tag "prestodb/$IMAGE:latest" "${DOCKER_ORG}/$IMAGE:${RELEASE_VERSION}"
+              docker push "${DOCKER_ORG}/$IMAGE:${RELEASE_VERSION}"
+
+              if [ "${{ github.event.inputs.tag_latest }}" = "true" ]; then
+                docker tag "prestodb/$IMAGE:latest" "${DOCKER_ORG}/$IMAGE:latest"
+                docker push "${DOCKER_ORG}/$IMAGE:latest"
+              fi
+
             else
+              echo "Image $IMAGE not found in LOCAL_IMAGES or MULTI_IMAGES variables"
               make "prestodb/$IMAGE"
-            fi
-            docker images
-          done
 
-          for IMAGE in "${IMAGE_ARRAY[@]}"; do
-            echo "Publishing image: $IMAGE"
-            docker tag "prestodb/$IMAGE:latest" "${{ github.repository_owner }}/$IMAGE:$RELEASE_VERSION"
-            docker push "${{ github.repository_owner }}/$IMAGE:$RELEASE_VERSION"
+              docker tag "prestodb/$IMAGE:latest" "${DOCKER_ORG}/$IMAGE:${RELEASE_VERSION}"
+              docker push "${DOCKER_ORG}/$IMAGE:${RELEASE_VERSION}"
 
-            if [ "${{ github.event.inputs.tag_latest }}" = "true" ]; then
-              docker tag "prestodb/$IMAGE:latest" "${{ github.repository_owner }}/$IMAGE:latest"
-              docker push "${{ github.repository_owner }}/$IMAGE:latest"
+              if [ "${{ github.event.inputs.tag_latest }}" = "true" ]; then
+                docker tag "prestodb/$IMAGE:latest" "${DOCKER_ORG}/$IMAGE:latest"
+                docker push "${DOCKER_ORG}/$IMAGE:latest"
+              fi
             fi
+
+            echo "Completed processing: $IMAGE"
           done
