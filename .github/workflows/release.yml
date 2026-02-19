@@ -3,18 +3,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      release_type:
-        description: 'Release type'
-        required: true
-        default: 'new_version'
-        type: 'choice'
-        options:
-          - new_version
-          - from_version
-      version:
-        description: 'Version to release(e.g. 12)'
-        required: false
-        type: 'string'
       images:
         description: 'Comma-separated list of images to release (e.g. "centos7-oj8,hdp3.1-hive")'
         required: true
@@ -32,9 +20,29 @@ env:
   MULTI_IMAGES: ${{ vars.MULTI_IMAGES || '' }}
 
 jobs:
+  validate-branch:
+    name: Validate branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH_NAME="${{ github.ref }}"
+          echo "Branch: ${BRANCH_NAME}"
+
+          if [[ "${BRANCH_NAME}" == "refs/heads/master" ]] || \
+             [[ "${BRANCH_NAME}" == refs/heads/release-* ]] || \
+             [[ "${BRANCH_NAME}" == refs/heads/patch-* ]]; then
+            echo "✓ Branch is allowed: ${BRANCH_NAME}"
+          else
+            echo "✗ Error: Release workflow can only be run on master, release-*, or patch-* branches"
+            echo "  Current branch: ${BRANCH_NAME}"
+            exit 1
+          fi
+
   release-branch:
     name: Prepare release branch
-    if: ${{ github.event.inputs.release_type == 'new_version' }}
+    needs: [validate-branch]
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -42,10 +50,6 @@ jobs:
     outputs:
       release_version: ${{ steps.release_tag.outputs.release_version }}
     steps:
-      - name: Check for master branch
-        if: ${{ github.ref != 'refs/heads/master' }}
-        run: echo "Invalid branch. New release can only be run on the master branch." && exit 1
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -59,38 +63,45 @@ jobs:
           git config --global alias.ls 'log --pretty=format:"%cd %h %ce: %s" --date=short --no-merges'
           git ls -5
 
-      - name: Create release tag
+      - name: Create release branch and tag
         id: release_tag
-        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           CURRENT_VERSION=$(grep "VERSION :=" Makefile | sed 's/VERSION := //' | sed 's/-SNAPSHOT//')
-          NEW_VERSION=${{ github.event.inputs.version }}
+          NEW_VERSION=${CURRENT_VERSION}
 
-          if [ -z "$NEW_VERSION" ]; then
-            NEW_VERSION=${CURRENT_VERSION}
-          fi
+          # Create release branch
+          git checkout -b release-${NEW_VERSION}
 
+          # Update version in Makefile
           sed -i "s/VERSION := .*/VERSION := ${NEW_VERSION}/" Makefile
           echo "release_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           git add Makefile
           git commit -m "[release-action] release version ${NEW_VERSION}"
           git ls -5
+
+          # Create release tag
           git tag -a -m "Release version ${NEW_VERSION}" ${NEW_VERSION}
+
+          # Push release branch and tag
+          git push origin release-${NEW_VERSION} --tags
+
+          # Switch back to master for next snapshot version
+          git checkout master
 
       - name: Prepare next snapshot version
         run: |
-          sed -i "s/VERSION := .*/VERSION := $((NEW_VERSION + 1))-SNAPSHOT/" Makefile
+          sed -i "s/VERSION := .*/VERSION := $((${{ steps.release_tag.outputs.release_version }} + 1))-SNAPSHOT/" Makefile
           git add Makefile
           git commit -m "[release-action] prepare for next development iteration"
           git ls -5
-          git push origin master --tags
+          git push origin master
 
   publish-images:
     runs-on: ubuntu-latest
     environment: release
     permissions:
       contents: write
-    needs: [release-branch]
+    needs: [validate-branch, release-branch]
     if: (!failure() && !cancelled())
     steps:
       - name: Validate inputs
@@ -99,28 +110,23 @@ jobs:
             echo "Error: Image names are required."
             exit 1
           fi
-          if [ "${{ github.event.inputs.release_type }}" != "new_version" ]; then
-            if [ -z "${{ github.event.inputs.version }}" ]; then
-              echo "Error: Version is required for from_version release type."
-              exit 1
-            fi
-          fi
-
-      - name: Get checkout branch
-        run: |
-          echo "Get checking out branch"
-          if [ "${{ github.event.inputs.release_type }}" = "new_version" ]; then
-            echo "RELEASE_VERSION=${{ needs.release-branch.outputs.release_version }}" >> $GITHUB_ENV
-          else
-            echo "RELEASE_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
-          fi
-          echo "RELEASE_VERSION=${{ env.RELEASE_VERSION }}"
 
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           show-progress: false
-          ref: refs/tags/${{ env.RELEASE_VERSION }}
+
+      - name: Determine release version
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+            # New release from master
+            echo "RELEASE_VERSION=${{ needs.release-branch.outputs.release_version }}" >> $GITHUB_ENV
+          else
+            # Publishing from release/patch branch - extract version from Makefile
+            RELEASE_VERSION=$(grep "VERSION :=" Makefile | sed 's/VERSION := //' | sed 's/-SNAPSHOT//')
+            echo "RELEASE_VERSION=${RELEASE_VERSION}" >> $GITHUB_ENV
+          fi
+          echo "Release version: ${{ env.RELEASE_VERSION }}"
 
       - name: Configure Git
         run: |
