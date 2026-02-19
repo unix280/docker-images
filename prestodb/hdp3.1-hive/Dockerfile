@@ -11,6 +11,7 @@
 # limitations under the License.
 
 FROM prestodb/hdp3.1-hive:11
+LABEL maintainer="Presto community <https://prestodb.io/community.html>"
 
 RUN set -xeu; \
     rm -f /etc/yum.repos.d/hdp.repo && \
