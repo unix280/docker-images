@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM azul/zulu-openjdk-centos:11
+FROM azul/zulu-openjdk-centos:17
 LABEL maintainer="Presto community <https://prestodb.io/community.html>"
 
 COPY ./files /tmp/files
