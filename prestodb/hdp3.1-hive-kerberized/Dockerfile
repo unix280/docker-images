@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM prestodb/hdp3.1-hive:11
+FROM prestodb/hdp3.1-hive-kerberized:11
 LABEL maintainer="Presto community <https://prestodb.io/community.html>"
 
 RUN set -xeu; \
